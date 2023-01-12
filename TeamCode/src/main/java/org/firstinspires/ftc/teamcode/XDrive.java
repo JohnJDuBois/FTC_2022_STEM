@@ -29,6 +29,10 @@ public class XDrive extends LinearOpMode {
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
 
+            if (gamepad1.x){
+                robot.linearArm.setTargetPosition(robot.CountsPerRev);
+            }
+
             double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower = axial - lateral + yaw;
