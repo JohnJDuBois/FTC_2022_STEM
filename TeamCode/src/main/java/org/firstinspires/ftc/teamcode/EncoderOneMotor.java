@@ -81,7 +81,7 @@ public class EncoderOneMotor extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     // Note: COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415) if gears used on motor
 
-    static final double     DRIVE_SPEED             = 1; // Value was changed from 0.6
+    static final double     DRIVE_SPEED             = 0.75; // Value was changed from 0.6
     //static final double     TURN_SPEED              = 1; // Value was changed from 0.5
 
     @Override
@@ -109,15 +109,17 @@ public class EncoderOneMotor extends LinearOpMode {
         waitForStart();
 
         // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  10, 10.0);  // up 10 Inches with 5 Sec timeout
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)\
         // Changed from encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
         // encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         // encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        while (opModeIsActive()){
+            if (gamepad1.x) {
+                encoderDrive(10, 10, 0);
+            }
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(3000);  // pause to display final telemetry message.
+        }
+
     }
 
     /*
@@ -158,9 +160,7 @@ public class EncoderOneMotor extends LinearOpMode {
             // always end the motion as soon as possible.
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (LinearSlideMotor.isBusy() )) { //&& rightDrive.isBusy()
+            while (opModeIsActive()) { // Note: was (runtime.seconds() < timeoutS) &&(LinearSlideMotor.isBusy() )&& rightDrive.isBusy()
 
                 // Display it for the driver.
                 telemetry.addData("Running to",  " %7d ", newLeftTarget); //,  newRightTarget);
@@ -170,11 +170,11 @@ public class EncoderOneMotor extends LinearOpMode {
             }
 
             // Stop all motion;
-            LinearSlideMotor.setPower(0);
+            //LinearSlideMotor.setPower(0);
             //rightDrive.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            LinearSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //LinearSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             // sleep(250);   // optional pause after each move.
