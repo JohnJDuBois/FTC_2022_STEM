@@ -113,6 +113,8 @@ public class VuforiaTest1 extends LinearOpMode {
     @Override public void runOpMode() {
         // Connect to the camera we are to use.  This name must match what is set up in Robot Configuration
         robot.init(hardwareMap);
+        // TPD - 01/12/2023 - I don't really like variable names like this. If there is only one webcam, then
+        //                      call the thing Webcam. Otherwise, say which Webcam it is like 'PhoneWebCam or similar'
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         /*
@@ -162,6 +164,9 @@ public class VuforiaTest1 extends LinearOpMode {
          *  coordinate system (the center of the field), facing up.
          */
 
+
+         // TPD 01/12/2023 - Why not use constant names for the rx, ry, and rz rather than 90, -90, etc.?
+         //                  The same for the Indexes.
         // Name and locate each trackable object
         identifyTarget(0, "Red Audience Wall",   -halfField,  -oneAndHalfTile, mmTargetHeight, 90, 0,  90);
         identifyTarget(1, "Red Rear Wall",        halfField,  -oneAndHalfTile, mmTargetHeight, 90, 0, -90);

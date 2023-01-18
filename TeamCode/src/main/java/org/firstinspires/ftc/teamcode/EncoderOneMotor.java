@@ -81,7 +81,10 @@ public class EncoderOneMotor extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     // Note: COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415) if gears used on motor
 
-    static final double     DRIVE_SPEED             = 0.75; // Value was changed from 0.6
+    // TPD 01-12-2023 - I would not make the DRIVE_SPEED 1. It is too fast and too much torque. 
+    //                  I would set it to a lower number such as 0.75 or so. 
+    static final double     DRIVE_SPEED             = 1; // Value was changed from 0.6 
+
     //static final double     TURN_SPEED              = 1; // Value was changed from 0.5
 
     @Override
@@ -108,17 +111,20 @@ public class EncoderOneMotor extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)\
-        // Changed from encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        // encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        // encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        // TPD 01-12-2023 - I would not drive the motor automatically in TeleOp Mode. I would use a 
+        //                  gamepad button to start the movement. 
+        //
+        //                  Personally, I would also probably check the gamepad button status in the 
+        //                  while loop using an if statement. I would stop the motor if the button 
+        //                  is released. This essentially gives you a kill switch by letting go of 
+        //                  the button if it something goes wront. 
+
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+        encoderDrive(DRIVE_SPEED,  10, 10.0);  // up 10 Inches with 5 Sec timeout
         while (opModeIsActive()){
             if (gamepad1.x) {
                 encoderDrive(10, 10, 0);
             }
-
-        }
 
     }
 
@@ -130,6 +136,8 @@ public class EncoderOneMotor extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the OpMode running.
      */
+    // TPD 01-12-2023 - Your naming convention does not make sense. Why leftInches? change it to slidePosition 
+    //                  or something similar. Or even just inches. 
     public void encoderDrive(double speed,
                              double leftInches,
                              double timeoutS) {
@@ -162,6 +170,9 @@ public class EncoderOneMotor extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive()) { // Note: was (runtime.seconds() < timeoutS) &&(LinearSlideMotor.isBusy() )&& rightDrive.isBusy()
 
+                // TPD 01-12-2023 - Here is where I would put the if statement to check the button status
+                //                  with an else to kill the motors if there is a problem. 
+                
                 // Display it for the driver.
                 telemetry.addData("Running to",  " %7d ", newLeftTarget); //,  newRightTarget);
                 telemetry.addData("Currently at",  " at %7d ",
