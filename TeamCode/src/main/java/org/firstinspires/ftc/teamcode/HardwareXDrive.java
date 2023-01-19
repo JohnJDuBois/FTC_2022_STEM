@@ -19,6 +19,9 @@ public class HardwareXDrive{
     //Place holder variable for when a servo is added to robot
     public Servo hook = null;
 
+
+
+
     // Converting MotorTicks, Gear Ratio, Spool/ Wheel Diameter to Counts Per Inch for Encoder
     public static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
     public static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
@@ -27,12 +30,16 @@ public class HardwareXDrive{
             (SPOOL_DIAMETER_INCHES * 3.1415);
     // Spools Turn speed
     public double     TURN_SPEED              = 0.7;
+
+    public static final int     DISTANCE0_1 = 40;
+    public static final int     DISTANCE1_2 = 30;
+    public static final int     DISTANCE2_3 = 20;
     // Stage Length of linear slide stage in inches
-    public int stageLength = 20;
+
 
     HardwareMap hwMap  = null;
 
-    public int stage = 0;
+
 
     // Constructor
     public HardwareXDrive(){
@@ -92,54 +99,23 @@ public class HardwareXDrive{
         armMotor.setPower(allPower);
     }
 
-
-    // Lifts the arm up/down a stage
-    public void ArmToPosition(double speed, double Inches, boolean button){
+    // Moves the arm to the inches passed as parameters
+    public void ArmToPosition(double speed, double Inches){
         int newTarget;
 
 
-        if (button) {
-            // Creates Motors new Target Position then sets its target to new position
-            newTarget = armMotor.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
-            armMotor.setTargetPosition(newTarget);
+        // Creates Motors new Target Position then sets its target to new position
+        newTarget = armMotor.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+        armMotor.setTargetPosition(newTarget);
 
-            //Sets arm motor to run to target position
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //Sets arm motor to run to target position
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // Sets Arm Power to speed param passed
-            armMotor.setPower(speed);
-        }
-
-        else{
-            armMotor.setPower(0);
-        }
-
+        // Sets Arm Power to speed param passed
+        armMotor.setPower(speed);
 
     }
 
-    // Method to increase the Arm for each stage check using a button
-    public void ArmStageIncrease(boolean button, double timerS) {
-        // Checks if the button is true and the stage is less then 3
-        if (button && stage < 3) {
-            stage++;
-            // Sets Turn Speed to Negative so motor rewinds
-            ArmToPosition(TURN_SPEED, stageLength, button);
-            /*telemetry.addData("Stage:", "%7d", stage);
-            telemetry.addData("Inches:", "%7d", stageLength);
-            telemetry.update();*/
-        }
-    }
 
-    // Same method But decreases the Stage
-    public void ArmStageDecrease(boolean button, double timerS){
-        // Make sure the Stage is not zero and rewinding
-        if (button && stage <= 3 && stage > 0){
-            stage--;
-            // Sets Turn Speed to Negative so motor rewinds
-            ArmToPosition(-TURN_SPEED, -stageLength, button);
-            /*telemetry.addData("Stage:", "%7d", stage);
-            telemetry.addData("Inches:", "%7d", stageLength);
-            telemetry.update();*/
-        }
-    }
+
 }
