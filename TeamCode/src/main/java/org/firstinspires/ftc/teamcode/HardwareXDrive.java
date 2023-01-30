@@ -13,14 +13,18 @@ public class HardwareXDrive{
     public DcMotor leftBack = null;
     public DcMotor rightBack = null;
 
-    //Arm motor variable for spool
+    //Arm motor variable for spool that lifts the linear slide
     public DcMotor armMotor = null;
 
-    //Place holder variable for when a servo is added to robot
+    //An lift motor for the claw uses encoder ticks to check how far it is
+    public DcMotor liftMotor = null;
+
+    //Servo on robot that rotates the claw up or down
     public Servo claw = null;
 
-
-
+    //init the the current position variables
+    public int startPosition = 0;
+    public int liftStart = 0;
 
     // Converting MotorTicks, Gear Ratio, Spool/ Wheel Diameter to Counts Per Inch for Encoder
     public static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
@@ -28,12 +32,19 @@ public class HardwareXDrive{
     public static final double     SPOOL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     public static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (SPOOL_DIAMETER_INCHES * 3.1415);
-    // Spools Turn speed
-    public double     TURN_SPEED              = 0.7;
 
-    public static final int     DISTANCE0_1 = 40;
-    public static final int     DISTANCE1_2 = 30;
-    public static final int     DISTANCE2_3 = 20;
+    //Variables for claw
+    //Open position location and closed position location
+    //Use a variable to see if the claw is opened or closed
+    public final double CLAW_OPEN_POS = 0.9;
+    public final double CLAW_CLOSED_POS = 0;
+    boolean clawOpened = false;
+
+
+    //Turn Speed variable for arm
+    public static double     TURN_SPEED  = 0.5;
+    public static double     LIFT_TURN_SPEED = 0.35;
+
     // Stage Length of linear slide stage in inches
 
 
@@ -59,14 +70,24 @@ public class HardwareXDrive{
         rightBack = hwMap.get(DcMotor.class, "rightBack");
 
         armMotor = hwMap.get(DcMotor.class, "armMotor");
+        liftMotor = hwMap.get(DcMotor.class, "liftMotor");
+
 
         claw = hwMap.get(Servo.class, "claw");
 
-
+        //Make sure that both motors with encoders are running and using the encoders
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //Set the motor to reverse, so we can have the right direction
+        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //The Start positions for both of the motors
+        startPosition = armMotor.getCurrentPosition();
+        liftStart = liftMotor.getCurrentPosition();
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -102,13 +123,13 @@ public class HardwareXDrive{
         armMotor.setPower(allPower);
     }
 
-    // Moves the arm to the inches passed as parameters
+    // Moves the arm to the inches passed, Note:Sets the position to the inches Example-- If 20 is passed moves it to 20 then if 30 moves it to 30
     public void ArmToPosition(double speed, double Inches){
         int newTarget;
 
 
         // Creates Motors new Target Position then sets its target to new position
-        newTarget = armMotor.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+        newTarget = startPosition + (int) (Inches * COUNTS_PER_INCH);
         armMotor.setTargetPosition(newTarget);
 
         //Sets arm motor to run to target position
@@ -120,5 +141,30 @@ public class HardwareXDrive{
     }
 
 
+    public void LiftToPosition(double speed, double Inches){
+        int newTarget;
+
+
+        // Creates Motors new Target Position then sets its target to new position
+        newTarget = startPosition + (int) (Inches * COUNTS_PER_INCH);
+        liftMotor.setTargetPosition(newTarget);
+
+        //Sets arm motor to run to target position
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Sets Arm Power to speed param passed
+        liftMotor.setPower(speed);
+
+    }
+
+    public void OpenClaw(){
+        claw.setPosition(CLAW_OPEN_POS);
+        clawOpened = true;
+    }
+
+    public void ClosedClaw(){
+        claw.setPosition(CLAW_CLOSED_POS);
+        clawOpened = false;
+    }
 
 }
