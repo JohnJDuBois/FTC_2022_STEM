@@ -115,6 +115,8 @@ public class XDrive extends LinearOpMode {
 
             }*/
 
+
+
             /* Note: changed this will set the slide to the stages height if certain button is pressed
             Note: Before the competition change the gamepad to gamepad2
             it is on gamepad1 for testing purposes only
@@ -142,8 +144,17 @@ public class XDrive extends LinearOpMode {
                     stage = 3;
                 }
 
-
             }
+
+            //Manual system if the user for whatever reason needs to move the linear slide down
+            if (gamepad1.dpad_down){
+                robot.armMotor.setPower(-0.35);
+            }
+
+            if (gamepad1.dpad_up){
+                robot.armMotor.setPower(0.35);
+            }
+
 
             if (!robot.liftMotor.isBusy()){
                 //Motor for the armLift
@@ -157,8 +168,8 @@ public class XDrive extends LinearOpMode {
                     robot.LiftToPosition(robot.LIFT_TURN_SPEED, -9);
                 }
 
-
             }
+
 
             if (gamepad1.right_trigger > 0){
                 robot.OpenClaw();
