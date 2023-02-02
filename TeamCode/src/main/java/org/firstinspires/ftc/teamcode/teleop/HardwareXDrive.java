@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -36,7 +36,7 @@ public class HardwareXDrive{
     //Variables for claw
     //Open position location and closed position location
     //Use a variable to see if the claw is opened or closed
-    public final double CLAW_OPEN_POS = 0.9;
+    public final double CLAW_OPEN_POS = 1.0;
     public final double CLAW_CLOSED_POS = 0;
     boolean clawOpened = false;
 

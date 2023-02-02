@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 //The following program is just a test for the claw with the controller triggers
 @TeleOp(name = "ClawTest", group = "robot")
+@Disabled
 public class ClawTest extends LinearOpMode {
     //Servo on robot that rotates the claw up or down
     public Servo claw = null;

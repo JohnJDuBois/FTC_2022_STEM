@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -26,8 +26,6 @@ public class XDrive extends LinearOpMode {
         // Init the robot hardware map(Motors servos)
         robot.init(hardwareMap);
 
-        // Saves the position of when linear slide is on the ground
-        int stage0 = robot.armMotor.getCurrentPosition();
 
         // Update Driver Hub or Phone that the robot is ready to run
         telemetry.addData("Status:", "Ready to Run");
@@ -67,6 +65,7 @@ public class XDrive extends LinearOpMode {
                 leftBackPower /= max;
                 rightBackPower /= max;
             }
+
 
             // Uses the Method to set all motor powers then Ten Telemetry to see how much power each is getting
             robot.setDriveMotorPower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower); // removed leftFront Because did not have expansion hub on at the time and needed to test
@@ -124,22 +123,22 @@ public class XDrive extends LinearOpMode {
             //Checks to first make sure the motor is not busy
             if (!robot.armMotor.isBusy()) {
                 //Then checks for each button and sets it to the stage height needed for the arm/LinearSlide
-                if (gamepad1.b){
+                if (gamepad2.b){
                     robot.ArmToPosition(robot.TURN_SPEED, stage0Height);
                     stage = 0;
                 }
 
-                else if (gamepad1.a) {
+                else if (gamepad2.a) {
                     robot.ArmToPosition(robot.TURN_SPEED, stage1Height);
                     stage = 1;
                 }
 
-                else if (gamepad1.x) {
+                else if (gamepad2.x) {
                     robot.ArmToPosition(robot.TURN_SPEED, stage2Height);
                     stage = 2;
                 }
 
-                else if (gamepad1.y) {
+                else if (gamepad2.y) {
                     robot.ArmToPosition(robot.TURN_SPEED, stage3Height);
                     stage = 3;
                 }
@@ -147,12 +146,20 @@ public class XDrive extends LinearOpMode {
             }
 
             //Manual system if the user for whatever reason needs to move the linear slide down
-            if (gamepad1.dpad_down){
+            if (gamepad2.dpad_down){
                 robot.armMotor.setPower(-0.35);
             }
 
-            if (gamepad1.dpad_up){
+            else{
+                robot.armMotor.setPower(0);
+            }
+
+            if (gamepad2.dpad_up){
                 robot.armMotor.setPower(0.35);
+            }
+
+            else{
+                robot.armMotor.setPower(0);
             }
 
 
@@ -160,28 +167,28 @@ public class XDrive extends LinearOpMode {
                 //Motor for the armLift
                 //Note: we use an motor on our arm lift instead of an servo due to issues with torque
                 //We check the encoder ticks to see how far we need to move
-                if (gamepad1.right_bumper){
+                if (gamepad2.right_bumper){
                     robot.LiftToPosition(robot.LIFT_TURN_SPEED, 9);
                 }
 
-                else if (gamepad1.left_bumper){
+                else if (gamepad2.left_bumper){
                     robot.LiftToPosition(robot.LIFT_TURN_SPEED, -9);
                 }
 
             }
 
 
-            if (gamepad1.right_trigger > 0){
+            if (gamepad2.dpad_right){
                 robot.OpenClaw();
             }
 
-            else if (gamepad1.left_trigger > 0){
+            else if (gamepad2.dpad_left){
                 robot.ClosedClaw();
             }
 
 
             telemetry.addData("Stage", "%7d", stage);
-            telemetry.addData("Claw Opened:", "%7d", robot.clawOpened);
+            telemetry.addData("Claw Opened:", "%b", robot.clawOpened);
             telemetry.update();
 
         }

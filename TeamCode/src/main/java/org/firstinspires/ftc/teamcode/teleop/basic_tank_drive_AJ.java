@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.Test for github
+/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -49,9 +49,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="basic_tank_drive", group="Iterative Opmode")
+@TeleOp(name="basic_tank_drive_AJ", group="Iterative Opmode")
 @Disabled
-public class basic_tank_drive extends OpMode
+public class basic_tank_drive_AJ extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -68,8 +68,8 @@ public class basic_tank_drive extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        leftDrive  = hardwareMap.get(DcMotor.class, "left_motor");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_motor");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -117,9 +117,32 @@ public class basic_tank_drive extends OpMode
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        leftPower  = -gamepad1.left_stick_y ;
-        rightPower = -gamepad1.right_stick_y ;
+        leftPower = -gamepad1.left_stick_y;
+        rightPower = -gamepad1.right_stick_y;
 
+        // Checks for deadzone and if not gives power
+        /*
+        if (gamepad1.left_stick_y < 0.1 && gamepad1.left_stick_y > -0.1) {
+            leftPower = 0.0;
+        } else {
+            // Gives the power of the motor
+            if (leftPower >= 0.0) {
+                leftPower = -leftPower * leftPower;
+            } else {
+                leftPower = leftPower * leftPower;
+            }
+            //Checks for deadzone on the Right Stick
+            if (gamepad1.right_stick_y < 0.1 && gamepad1.right_stick_y > -0.1) {
+                rightPower = 0.0;
+            } else {
+                // if not in deadzone gives the right power
+                if (rightPower >= 0) {
+                    rightPower = -rightPower * rightPower;
+                } else {
+                    rightPower = rightPower * rightPower;
+                }
+            }
+    }*/
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
