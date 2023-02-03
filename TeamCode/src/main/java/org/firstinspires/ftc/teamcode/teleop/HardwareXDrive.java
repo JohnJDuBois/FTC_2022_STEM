@@ -36,14 +36,14 @@ public class HardwareXDrive{
     //Variables for claw
     //Open position location and closed position location
     //Use a variable to see if the claw is opened or closed
-    public final double CLAW_OPEN_POS = 1.0;
+    public final double CLAW_OPEN_POS = 0.8;
     public final double CLAW_CLOSED_POS = 0;
     boolean clawOpened = false;
 
 
     //Turn Speed variable for arm
-    public static double     TURN_SPEED  = 0.5;
-    public static double     LIFT_TURN_SPEED = 0.35;
+    public static double     TURN_SPEED  = 0.7;
+    public static double     LIFT_TURN_SPEED = 0.1;
 
     // Stage Length of linear slide stage in inches
 
@@ -82,8 +82,6 @@ public class HardwareXDrive{
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //Set the motor to reverse, so we can have the right direction
-        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //The Start positions for both of the motors
         startPosition = armMotor.getCurrentPosition();
@@ -146,7 +144,7 @@ public class HardwareXDrive{
 
 
         // Creates Motors new Target Position then sets its target to new position
-        newTarget = startPosition + (int) (Inches * COUNTS_PER_INCH);
+        newTarget = liftStart + (int) (Inches * COUNTS_PER_INCH);
         liftMotor.setTargetPosition(newTarget);
 
         //Sets arm motor to run to target position
@@ -154,8 +152,7 @@ public class HardwareXDrive{
 
         // Sets Arm Power to speed param passed
         liftMotor.setPower(speed);
-
-    }
+        }
 
     public void OpenClaw(){
         claw.setPosition(CLAW_OPEN_POS);
@@ -165,6 +162,25 @@ public class HardwareXDrive{
     public void ClosedClaw(){
         claw.setPosition(CLAW_CLOSED_POS);
         clawOpened = false;
+    }
+
+    public void StartUp(){
+        LiftToPosition(LIFT_TURN_SPEED, 3.75);
+        OpenClaw();
+    }
+
+    //Lift Up and down
+    //Send the lift down and open claw
+    public void LiftDown(){
+        LiftToPosition(LIFT_TURN_SPEED, 3.75);
+    }
+
+    public void LiftUp(){
+        LiftToPosition(LIFT_TURN_SPEED, 0);
+        //When Lift Is Up kill the motor to stop motor staling
+        if (liftMotor.getCurrentPosition() < 0){
+            liftMotor.setPower(0);
+        }
     }
 
 }

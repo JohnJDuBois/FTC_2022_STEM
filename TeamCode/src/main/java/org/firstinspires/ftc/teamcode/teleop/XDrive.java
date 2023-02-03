@@ -38,6 +38,8 @@ public class XDrive extends LinearOpMode {
         telemetry.addData("Arm_Starting_at...:", "%7d", robot.armMotor.getCurrentPosition());
         telemetry.update();
 
+        robot.StartUp();
+
         while (opModeIsActive()){
 
             // Gets the the imput of the gamepad and adjest the Motors power
@@ -147,35 +149,33 @@ public class XDrive extends LinearOpMode {
 
             //Manual system if the user for whatever reason needs to move the linear slide down
             if (gamepad2.dpad_down){
-                robot.armMotor.setPower(-0.35);
+                robot.armMotor.setPower(-0.6);
+                robot.LiftDown();
+            }
+
+            else if (gamepad2.dpad_up){
+                robot.armMotor.setPower(0.6);
+                robot.LiftUp();
             }
 
             else{
                 robot.armMotor.setPower(0);
             }
 
-            if (gamepad2.dpad_up){
-                robot.armMotor.setPower(0.35);
-            }
 
-            else{
-                robot.armMotor.setPower(0);
-            }
-
-
-            if (!robot.liftMotor.isBusy()){
+            //if (!robot.liftMotor.isBusy()){
                 //Motor for the armLift
                 //Note: we use an motor on our arm lift instead of an servo due to issues with torque
                 //We check the encoder ticks to see how far we need to move
-                if (gamepad2.right_bumper){
-                    robot.LiftToPosition(robot.LIFT_TURN_SPEED, 9);
-                }
-
-                else if (gamepad2.left_bumper){
-                    robot.LiftToPosition(robot.LIFT_TURN_SPEED, -9);
-                }
-
+            if (gamepad2.right_bumper){
+                robot.LiftDown();
             }
+
+            else if (gamepad2.left_bumper){
+                robot.LiftUp();
+            }
+
+            //}
 
 
             if (gamepad2.dpad_right){
@@ -189,6 +189,7 @@ public class XDrive extends LinearOpMode {
 
             telemetry.addData("Stage", "%7d", stage);
             telemetry.addData("Claw Opened:", "%b", robot.clawOpened);
+            telemetry.addData("Lift At:", "%7d", robot.liftMotor.getCurrentPosition());
             telemetry.update();
 
         }
